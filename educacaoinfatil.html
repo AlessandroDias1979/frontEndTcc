@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parecer - Educação Infantil (BNCC)</title>
+  <link rel="stylesheet" href="../assets/css/styleEdInf.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-left">
+      <img src="./assets/img/logo.png" alt="logo.png" class="header-img">
+    </div>
+    <div class="header-title"> 
+      <h1 class="header-title">Parecer Educação Infantil (BNCC)</h1>
+    </div>
+    <div class="header-right">
+      <button class="btn-voltar" id="btn-voltar">Voltar</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="dados-aluno">
+      <div class="campo">
+        <label for="nomeAluno">Nome do Aluno</label>
+        <input type="text" id="nomeAluno" placeholder="Digite o nome do aluno" />
+      </div>
+
+      <div class="campo">
+        <label for="turma">Turma</label>
+        <input type="text" id="turma" placeholder="Digite a turma" />
+      </div>
+
+      <div class="campo campo-observacoes">
+        <label for="observacoes">Observações</label>
+        <textarea id="observacoes" rows="5" placeholder="Digite as observações..."></textarea>
+      </div>
+
+      <div class="coluna-direita">
+        <div class="campo">
+          <label for="periodo">Período</label>
+          <input type="text" id="periodo" placeholder="Ex: 1º trimestre" />
+        </div>
+
+        <div class="campo">
+          <label for="nivel">Nível de desenvolvimento</label>
+          <input type="text" id="nivel" placeholder="Ex: Em desenvolvimento" />
+        </div>
+      </div>
+    </section>
+
+    <section class="cards-grid">
+      <!--<article class="card">
+        <div class="card-titulo" id="titulo"> Direitos de Aprendizagem e Desenvolvimento </div>
+        <div class="card-conteudo" id ="perguntas">
+          
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-titulo">Eu, o outro e o nós (EO)</div>
+        <div class="card-conteudo">
+          <label><input type="checkbox" data-text="Demonstrar empatia, respeito e atenção ao outro." /> Demonstrar
+            empatia, respeito e atenção ao outro.</label>
+          <label><input type="checkbox" data-text="Participar de combinados e conviver em grupo." /> Participar de
+            combinados e conviver em grupo.</label>
+          <label><input type="checkbox" data-text="Expressar sentimentos e reconhecer emoções." /> Expressar sentimentos
+            e reconhecer emoções.</label>
+          <label><input type="checkbox" data-text="Compartilhar objetos e espaços coletivos." /> Compartilhar objetos e
+            espaços coletivos.</label>
+          <label><input type="checkbox" data-text="Desenvolver atitudes de cuidado consigo e com o outro." />
+            Desenvolver atitudes de cuidado consigo e com o outro.</label>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-titulo">Corpo, Gesto e Movimento (CG)</div>
+        <div class="card-conteudo">
+          <label><input type="checkbox" data-text="Explorar habilidades motoras amplas e finas." /> Explorar habilidades
+            motoras amplas e finas.</label>
+          <label><input type="checkbox" data-text="Participar de jogos, danças e circuitos." /> Participar de jogos,
+            danças e circuitos.</label>
+          <label><input type="checkbox" data-text="Demonstrar coordenação motora em diversas atividades." /> Demonstrar
+            coordenação motora em diversas atividades.</label>
+          <label><input type="checkbox" data-text="Utilizar gestos e movimentos para se expressar." /> Utilizar gestos e
+            movimentos para se expressar.</label>
+          <label><input type="checkbox" data-text="Cuidar do próprio corpo e da higiene pessoal." /> Cuidar do próprio
+            corpo e da higiene pessoal.</label>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-titulo">Traços, cores, sons e formas (TS)</div>
+        <div class="card-conteudo">
+          <label><input type="checkbox" data-text="Explorar materiais e técnicas de desenho e pintura." /> Explorar
+            materiais e técnicas de desenho e pintura.</label>
+          <label><input type="checkbox" data-text="Apreciar produções artísticas e musicais." /> Apreciar produções
+            artísticas e musicais.</label>
+          <label><input type="checkbox" data-text="Experimentar sons, ritmos e instrumentos." /> Experimentar sons,
+            ritmos e instrumentos.</label>
+          <label><input type="checkbox" data-text="Utilizar diferentes materiais de forma criativa." /> Utilizar
+            diferentes materiais de forma criativa.</label>
+          <label><input type="checkbox" data-text="Reconhecer e criar formas, cores e composições." /> Reconhecer e
+            criar formas, cores e composições.</label>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-titulo">Escuta, fala, pensamento e imaginação (EF)</div>
+        <div class="card-conteudo">
+          <label><input type="checkbox" data-text="Escutar histórias e relatar fatos vividos." /> Escutar histórias e
+            relatar fatos vividos.</label>
+          <label><input type="checkbox" data-text="Participar de rodas de conversa." /> Participar de rodas de
+            conversa.</label>
+          <label><input type="checkbox" data-text="Comunicar ideias, desejos e sentimentos." /> Comunicar ideias,
+            desejos e sentimentos.</label>
+          <label><input type="checkbox" data-text="Ampliar o vocabulário e a oralidade." /> Ampliar o vocabulário e a
+            oralidade.</label>
+          <label><input type="checkbox" data-text="Produzir marcas gráficas e hipóteses de escrita." /> Produzir marcas
+            gráficas e hipóteses de escrita.</label>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-titulo">Espaços, tempos, quantidades, relações e transformações (ET)</div>
+        <div class="card-conteudo">
+          <label><input type="checkbox" data-text="Explorar noções de espaço e tempo." /> Explorar noções de espaço e
+            tempo.</label>
+          <label><input type="checkbox" data-text="Observar e comparar tamanhos, quantidades e formas." /> Observar e
+            comparar tamanhos, quantidades e formas.</label>
+          <label><input type="checkbox" data-text="Identificar semelhanças e diferenças." /> Identificar semelhanças e
+            diferenças.</label>
+          <label><input type="checkbox" data-text="Participar de experiências com medidas e contagem." /> Participar de
+            experiências com medidas e contagem.</label>
+          <label><input type="checkbox" data-text="Investigar mudanças na natureza e nos objetos." /> Investigar
+            mudanças na natureza e nos objetos.</label>
+        </div>
+      </article>-->
+    </section>
+
+    <section class="acoes">
+      <button id="btnLimpar" class="btn btn-secundario" type="button">Limpar</button>
+      <button id="btnPdf" class="btn btn-primario" type="button">Gerar PDF</button>
+    </section>
+  </main>
+
+  <footer class="rodape"></footer>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="../assets/script/scriptEdInf.js"></script>
+
+</body>
+
+</html>

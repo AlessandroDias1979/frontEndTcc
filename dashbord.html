@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+
+  <link rel="stylesheet" href="../assets/css/styleDash.css" />
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-left">
+      <img src="../assets/img/logo.png" alt="Logo" class="header-img" />
+    </div>
+
+    <h1 class="header-title">Bem-vindo</h1>
+
+    <div class="header-right">
+      <button class="btn-sair" id="btn-sair">Sair</button>
+    </div>
+  </header>
+
+  <nav class="menu" aria-label="Menu principal">
+    <!-- data-target aponta para o id da section -->
+    <a href="#alunos" class="menu-link active" data-target="tela-alunos">Cadastrar Alunos</a>
+    <a href="#pareceres" class="menu-link" data-target="tela-pareceres">Pareceres</a>
+  </nav>
+
+  <main class="conteudo">
+    <!-- TELA 1 -->
+    <section id="tela-alunos" class="tela ativa">
+      <h2>Cadastrar Alunos</h2>
+
+      <form class="form">
+        <div class="form-row">
+          <label for="nome">Nome</label>
+          <input type="text" id="nomeAlunoCadastrar" placeholder="Digite o nome do aluno" />
+        </div>
+
+        <div class="form-row">
+          <label for="turma">Turma</label>
+          <input type="text" id="turmaAlunoCadastrar" placeholder="Ex.: 2º Ano A" />
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="btn-primario" id="btnCadastrarAluno">Salvar</button>
+          <button type="button" class="btn-primario" id="btnListarAluno">Listar</button>
+        </div>
+        
+      </form>
+    </section>
+    <!-- TELA 2 -->
+    <section id="tela-pareceres" class="tela">
+      <h2>Pareceres</h2>
+      <a href="educacaoinfatil.html"><button type="button" class="buttonParecer" id="btnEducacaoInfantil">Educação Infantil</button></a>
+      <a href="anosIniciais.html"><button type="button" class="buttonParecer" id="btnAnosIniciais">Anos Iniciais</button></a>
+      <a href="anosFinais.html"><button type="button" class="buttonParecer" id="btnAnosFinais">Anos Finais</button></a>
+    </section>
+  </main>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="../assets/script/scriptDash.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="Pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    
+</head>
+
+<body>
+    <div class="container">
+        <!--Começo da estrutura de login-->
+        <div class="form_box login">
+            <div class="form">
+                <img src="../assets/img/logo.png" alt="logo.png">
+                <h1>Login</h1>
+                <div class="input_box login">
+                    <input type="email" id="loginEmail" placeholder="E-mail" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path
+                            d="M12 2a5 5 0 1 0 0 10 5 5 0 1 0 0-10M4 22h16c.55 0 1-.45 1-1v-1c0-3.86-3.14-7-7-7h-4c-3.86 0-7 3.14-7 7v1c0 .55.45 1 1 1">
+                        </path>
+                    </svg>
+                </div>
+                <div class="input_box">
+                    <input type="password" id="loginSenha" placeholder="Senha" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path
+                            d="M6 22h12c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2h-1V7c0-2.76-2.24-5-5-5S7 4.24 7 7v2H6c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2M9 7c0-1.65 1.35-3 3-3s3 1.35 3 3v2H9z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="senha_link">
+                    <a href="#">Esqueceu a senha?</a>
+                </div>
+                <button type="submit" class="btm" id="buttonLogin">Entrar</button>
+            </div>
+        </div>
+
+        <!--Começo da estrutura de cadastro-->
+        <div class="form_box register">
+           <div class="form">
+                <img src="./assets/img/logo.png" alt="logo.png">
+                <h1>Cadastro</h1>
+                <div class="input_box">
+                    <input type="text" id="cadastroDeUsuario" placeholder="Usuário" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path
+                            d="M12 2a5 5 0 1 0 0 10 5 5 0 1 0 0-10M4 22h16c.55 0 1-.45 1-1v-1c0-3.86-3.14-7-7-7h-4c-3.86 0-7 3.14-7 7v1c0 .55.45 1 1 1">
+                        </path>
+                    </svg>
+                </div>
+                <div class="input_box">
+                    <input type="email" id="cadastroDeEmail" placeholder="E-mail" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path d="M20 4H4c-1.1 0-2 .9-2 2v.25l10 7.5 10-7.5V6c0-1.1-.9-2-2-2"></path>
+                        <path
+                            d="M12 16c-.21 0-.42-.07-.6-.2L2 8.75V18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8.75l-9.4 7.05c-.18.13-.39.2-.6.2">
+                        </path>
+                    </svg>
+                </div>
+                <div class="input_box">
+                    <input type="password" id="cadastroDeSenha" placeholder="Senha" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                        <path
+                            d="M6 22h12c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2h-1V7c0-2.76-2.24-5-5-5S7 4.24 7 7v2H6c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2M9 7c0-1.65 1.35-3 3-3s3 1.35 3 3v2H9z">
+                        </path>
+                    </svg>
+                </div>
+                <button type="button" class="btm" id="buttonCadastrar">Registrar</button>
+           </div>
+        </div>
+
+        <!--Pagina escondida-->
+        <div class="toggle-box">
+
+            <!--Painel de login-->
+            <div class="toggle-painel left">
+                <h1>Bem-vindo!</h1>
+                <p>Ja possui uma conta</p>
+                <button class="btm cadastrar_btm" id="cadastrar">Cadastrar</button>
+            </div>
+            <!--Painel de cadastro-->
+            <div class="toggle-painel right">
+                <h1>Bem-vindo de volta!</h1>
+                <p>Ja possuo uma conta</p>
+                <button class="btm login_btm" id="login">Login</button>
+            </div>
+        </div>
+    </div>
+
+     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script src="../assets/script/script.js"></script>  
+</body>
+ 
+</html>
