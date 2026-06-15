@@ -126,7 +126,7 @@ const receberLogin = () => {
                     icon: "success"
                 }).then(() => {
                     limparCamposLogin();
-                    window.location.href = './dashboard.html';
+                    window.location.href = 'dashboard.html';
                 });
             } else {
                 Swal.fire({
