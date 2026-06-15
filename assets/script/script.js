@@ -50,13 +50,13 @@ var enviarParaCadastro = () => {
     }
 
     let dadosUsuario = {
-        nome: usuario,
-        email: email,
-        senha: senha
+        NomeUsuario: usuario,
+        Email: email,
+        Senha: senha
     };
 
     $.ajax({
-        url: 'https://serviconodetcc.onrender.com/Usuarios',
+        url: 'https://serviconodetcc.onrender.com/CadastrarUsuario',
         dataType: 'json',
         type: 'POST',
         contentType: 'application/json',

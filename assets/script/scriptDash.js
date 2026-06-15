@@ -67,48 +67,80 @@ $(document).ready(function () {
 });
 
 // Envia o serviço para banco de dados
-function enviarParaCadastroAluno() {
 
-    const nome = $('#nomeAlunoCadastrar').val();
-    const turma = $('#turmaAlunoCadastrar').val();
+(document).ready(function () {
 
-    if (!nome || !turma) {
+// Verifica se o usuário está logado
+    const usuarioId = localStorage.getItem('usuarioId');
+    const usuarioNome = localStorage.getItem('usuarioNome');
+
+    if (!usuarioId) {
+        Swal.fire({
+            title: "Acesso negado",
+            text: "Faça login para acessar o dashboard.",
+            icon: "warning"
+        }).then(() => {
+            window.location.href = 'index.html'; // ou login.html
+        });
+        return;
+    }
+
+    // Exibe o nome do usuário logado na tela
+    $('#bemVindo').text('Bem-vindo(a), ' + usuarioNome + '!');
+
+    // Carrega as turmas do usuário logado
+    carregarTurmas();
+});
+
+
+const cadastrarTurma = () => {
+
+    let nomeTurma = $('#nomeTurma').val().trim();
+    let ano = $('#ano').val().trim();
+    let usuarioId = localStorage.getItem('usuarioId'); 
+
+    if (!nomeTurma || !ano) {
         Swal.fire({
             title: "Atenção",
-            text: "Preencha todos os campos!",
+            text: "Preencha todos os campos.",
             icon: "warning"
         });
         return;
     }
 
     $.ajax({
-        url: 'http://localhost:3001/alunos',
         type: 'POST',
+        url: 'https://serviconodetcc.onrender.com/CadastrarTurma',
         contentType: 'application/json',
-        dataType: 'json',
         data: JSON.stringify({
-            nome: nome,
-            turma: turma
+            nome: nomeTurma,
+            ano: ano,
+            usuario_id: usuarioId
         }),
-        success: function (response) {
+        dataType: 'json',
+
+        success: function (resposta) {
             Swal.fire({
                 title: "Sucesso",
-                text: "Aluno cadastrado com sucesso",
+                text: "Turma cadastrada com sucesso!",
                 icon: "success"
-            }).then(() => {
-                window.location.reload(); // Recarrega a página para mostrar o novo aluno
             });
+            $('#nomeTurma').val('');
+            $('#ano').val('');
+            carregarTurmas();
         },
+
         error: function (err) {
-            console.error(err);
+            console.error("Erro ao cadastrar turma:", err);
             Swal.fire({
                 title: "Erro",
-                text: "Erro ao cadastrar aluno",
+                text: "Erro ao cadastrar turma.",
                 icon: "error"
             });
         }
     });
-}
+};
+
 
 document.getElementById("btnListarAluno").addEventListener("click", function () {
   window.location.href = "listar.html"; // página desejada
