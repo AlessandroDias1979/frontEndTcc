@@ -8,12 +8,6 @@ document.getElementById("btn-voltar").addEventListener("click", function () {
   }
 });
 
-// Lista de alunos (simulação – depois pode vir de API ou banco)
-let alunos = [
-  { id: 1, nome: "João Silva", turma: "1º Ano A" },
-  { id: 2, nome: "Maria Souza", turma: "2º Ano B" },
-  { id: 3, nome: "Pedro Santos", turma: "3º Ano A" }
-];
 
 const tabela = document.getElementById("tabelaAlunos");
 
