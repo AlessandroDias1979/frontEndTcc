@@ -1,8 +1,17 @@
+var idUsuario = null;
+
+$(function () {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    idUsuario = urlParams.get('idUsuario');
+});
+
 // ===============================
 // NAVEGAÇÃO ENTRE AS TELAS
 // ===============================
 const menuLinks = document.querySelectorAll('.menu-link');
 const telas = document.querySelectorAll('.tela');
+
 
 menuLinks.forEach(link => {
     link.addEventListener('click', (event) => {
@@ -48,6 +57,7 @@ const limparCamposAluno = () => {
 
 
 var enviarParaCadastroAluno = () => {
+    alert(idUsuario);
 
     let nome = $('#nomeAlunoCadastrar').val().trim();
     let turma = $('#turmaAlunoCadastrar').val().trim();
@@ -62,12 +72,13 @@ var enviarParaCadastroAluno = () => {
     }
 
     let dadosAluno = {
-        NomeAluno: nome,
-        Turma: turma
+        NomeDoAluno: nome,
+        Turma: turma,
+        idUsuario: idUsuario,
     };
 
     $.ajax({
-        url: 'https://serviconodetcc.onrender.com/CadastrarAluno',
+        url: 'https://serviconodetcc.onrender.com/cadastrarAluno',
         dataType: 'json',
         type: 'POST',
         contentType: 'application/json',
