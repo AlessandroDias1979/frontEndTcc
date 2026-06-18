@@ -11,7 +11,7 @@ btnVoltar.addEventListener("click", function () {
   if (window.history.length > 1) {
     window.history.back();
   } else {
-    window.location.href = "dashboard.html"; // ajuste se o nome do arquivo for outro
+    window.location.href = "dashboard.html"; // caminho para acessar o dashboard.html
   }
 });
 
@@ -46,7 +46,7 @@ function renderizarTabela(alunos) {
       <tr>
         <td colspan="3" style="text-align:center;">Nenhum aluno cadastrado.</td>
       </tr>
-    `;
+`;
     return;
   }
 
