@@ -125,7 +125,7 @@ const CarregarTitulos = () => {
 const CarregarPerguntas = (idTitulo) => {
 
   $.ajax({
-    url: `http://localhost:3001/perguntas?idTitulo=${idTitulo}`,
+    url: `'https://serviconodetcc.onrender.com/perguntas?idTitulo=${idTitulo}'`,
     type: 'GET',
     dataType: 'json',
     success: function (perguntas) {
@@ -156,11 +156,11 @@ const CarregarPerguntas = (idTitulo) => {
 };
 
 
-/*const  CarregarrTela  = () => {
+const  CarregarrTela  = () => {
 
 
    $.ajax({
-        url: 'http://localhost:3001/perguntas?idTurma=1',
+        url: 'https://serviconodetcc.onrender.com/perguntas?idTitulo=1',
         type: 'GET',
         contentType: 'application/json',
             dataType: 'json',
@@ -181,7 +181,7 @@ const CarregarPerguntas = (idTitulo) => {
 });
         }
     });
-}*/
+}
 
 $(document).ready(function () {
 

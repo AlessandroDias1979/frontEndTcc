@@ -18,7 +18,7 @@ btnVoltar.addEventListener("click", function () {
 // RENDERIZAR TABELA
 // ===============================
 function renderizarTabela(alunos) {
-  const $tabela = $("#tabelaAlunos tbody"); // seleciona o <tbody>
+  const $tabela = $("#tabelaAlunos tbody");
   $tabela.empty();
 
   if (!alunos || alunos.length === 0) {
@@ -29,8 +29,8 @@ function renderizarTabela(alunos) {
   alunos.forEach(function (aluno) {
     const linha = `
       <tr>
-        <td>${aluno.nome}</td>
-        <td>${aluno.turma}</td>
+        <td>${aluno.NomeDoAluno}</td>
+        <td>${aluno.Turma}</td>
         <td class="acoes">
           <button class="btn-editar"  data-id="${aluno.id}">Editar</button>
           <button class="btn-deletar" data-id="${aluno.id}">Deletar</button>
@@ -62,7 +62,7 @@ function carregarAlunos() {
     method: "GET",
     dataType: "json",
     success: function (alunos) {
-      console.log("Alunos recebidos:", alunos); // ajuda no debug
+      console.log("Alunos recebidos:", alunos);
       renderizarTabela(alunos);
     },
     error: function (erro) {
@@ -96,15 +96,15 @@ function deletarAluno(id) {
 // EDITAR ALUNO
 // ===============================
 function editarAluno(aluno) {
-  const novoNome  = prompt("Editar nome:", aluno.nome);
-  const novaTurma = prompt("Editar turma:", aluno.turma);
+  const novoNome  = prompt("Editar nome:", aluno.NomeDoAluno);
+  const novaTurma = prompt("Editar turma:", aluno.Turma);
 
   if (!novoNome || !novaTurma) return;
 
   const dadosAluno = {
     id: aluno.id,
-    nome: novoNome,
-    turma: novaTurma
+    NomeDoAluno: novoNome,
+    Turma: novaTurma
   };
 
   $.ajax({
