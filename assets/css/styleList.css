@@ -189,13 +189,16 @@ html, body {
 }
 
 /* Coluna de ações */
+
 #tabelaAlunos td.acoes {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;       /* impede a quebra de linha */
+    white-space: nowrap;     /* garante que textos não quebrem */
 }
+
 
 /* ===== Botões da tabela ===== */
 .btn-editar,

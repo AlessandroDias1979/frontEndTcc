@@ -118,7 +118,7 @@ function editarAluno(aluno) {
       font-family:Arial, sans-serif;">
       <div style="background:#fff; padding:25px 30px; border-radius:10px;
                   width:90%; max-width:400px; box-shadow:0 5px 20px rgba(0,0,0,0.3);">
-        <h3 style="margin-top:0; color:#333;">✏️ Editar Aluno</h3>
+        <h3 style="margin-top:0; color:#333;">Editar Aluno</h3>
 
         <label style="display:block; margin:12px 0 5px; font-weight:bold; color:#555;">
           Nome do Aluno:
