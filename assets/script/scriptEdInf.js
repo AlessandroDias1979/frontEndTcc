@@ -27,7 +27,7 @@ btnPdf.addEventListener("click", () => {
   pdf.text("Parecer – Educação Infantil (BNCC)", 10, y);
   y += 10;
 
-  pdf.setFontSize(11);
+  pdf.setFontSize(12);
   pdf.text(`Nome do aluno: ${nomeAluno}`, 10, y); y += 7;
   pdf.text(`Turma: ${turma}`, 10, y); y += 7;
   pdf.text(`Período: ${periodo}`, 10, y); y += 7;
@@ -50,7 +50,7 @@ btnPdf.addEventListener("click", () => {
     });
   }
 
-  pdf.save(`Parecer_${nomeAluno || "Aluno"}.pdf`);
+  pdf.save(`Parecer_${NomeDoAluno || "Aluno"}.pdf`);
 });
 
 // ====== Limpar formulário ======
@@ -73,7 +73,7 @@ btnVoltar.addEventListener("click", () => {
 // ====== Carregar Títulos (cards) ======
 const carregarTitulos = () => {
   $.ajax({
-    url: `${API_BASE}/titulos?idTurma=1`,
+    url: `${API_BASE}/AllTitulos`,
     type: "GET",
     dataType: "json",
     success: function (titulos) {
@@ -82,7 +82,7 @@ const carregarTitulos = () => {
       $.each(titulos, function (_, titulo) {
         const cardHTML = `
           <article class="card">
-            <div class="card-titulo">${titulo.nomeTitulo}</div>
+            <div class="card-titulo">${titulo.NomeDoTitulo}</div>
             <div class="card-conteudo" id="perguntas-${titulo.idTitulo}">
               Carregando perguntas...
             </div>
@@ -103,7 +103,7 @@ const carregarTitulos = () => {
 // ====== Carregar Perguntas de cada título ======
 const carregarPerguntas = (idTitulo) => {
   $.ajax({
-    url: `${API_BASE}/perguntas?idTitulo=${idTitulo}`,  // ✅ sem aspas extras
+    url: `${API_BASE}/PerguntasbyTituloid/${idTitulo}`,  // ✅ sem aspas extras
     type: "GET",
     dataType: "json",
     success: function (perguntas) {
@@ -115,11 +115,11 @@ const carregarPerguntas = (idTitulo) => {
           <label class="pergunta-item">
             <input 
               type="checkbox"
-              data-text="${pergunta.questao}"
-              data-id="${pergunta.id}"
+              data-text="${pergunta.Pergunta}"
+              data-id="${pergunta.idPerguntas}"
               data-titulo="${idTitulo}"
             >
-            ${pergunta.questao}
+            ${pergunta.Pergunta}
           </label><br>
         `);
       });
@@ -132,7 +132,7 @@ const carregarPerguntas = (idTitulo) => {
 
 const idParecer = (idAluno) => {
   $.ajax({
-    url: `${API_BASE}/parecer?idAluno=${idAluno}`,
+    url: `${API_BASE}/AllPareceres?idAluno=${idAluno}`,
     type: "GET",
     dataType: "json",
     success: function (parecer) {
