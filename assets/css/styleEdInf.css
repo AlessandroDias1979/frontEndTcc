@@ -86,6 +86,8 @@ body {
     "obs direita";
   gap: 14px;
   margin-bottom: 18px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .campo {
@@ -102,6 +104,7 @@ body {
 .campo input,
 .campo textarea {
   width: 100%;
+  box-sizing: border-box;
   border: 1px solid #9f9f9f;
   border-radius: 10px;
   padding: 10px 12px;
