@@ -1,104 +1,85 @@
+// ====== Elementos ======
 const btnPdf = document.getElementById("btnPdf");
 const btnLimpar = document.getElementById("btnLimpar");
 const btnVoltar = document.getElementById("btn-voltar");
-const btnListarAluno = document.getElementById("btnListarAluno");
 
-// Gerar PDF
+// URL base da API (centralizada para facilitar manutenção)
+const API_BASE = "https://serviconodetcc.onrender.com";
+
+// ====== Gerar PDF ======
 btnPdf.addEventListener("click", () => {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF();
 
-  // Captura dos inputs
-  const nomeAluno = document.getElementById("nomeAluno").value;
-  const turma = document.getElementById("turma").value;
+  const nomeAluno   = document.getElementById("nomeAluno").value;
+  const turma       = document.getElementById("turma").value;
   const observacoes = document.getElementById("observacoes").value;
-  const periodo = document.getElementById("periodo").value;
-  const nivel = document.getElementById("nivel").value;
+  const periodo     = document.getElementById("periodo").value;
+  const nivel       = document.getElementById("nivel").value;
 
-  // Captura dos checkboxes marcados
   const checkboxesMarcados = document.querySelectorAll(
     "input[type='checkbox']:checked"
   );
 
   let y = 10;
 
-  // Título
   pdf.setFontSize(14);
   pdf.text("Parecer – Educação Infantil (BNCC)", 10, y);
   y += 10;
 
-  // Dados do aluno
   pdf.setFontSize(11);
   pdf.text(`Nome do aluno: ${nomeAluno}`, 10, y); y += 7;
   pdf.text(`Turma: ${turma}`, 10, y); y += 7;
   pdf.text(`Período: ${periodo}`, 10, y); y += 7;
   pdf.text(`Nível de desenvolvimento: ${nivel}`, 10, y); y += 10;
 
-  // Observações
-  pdf.text("Observações:", 10, y);
-  y += 7;
+  pdf.text("Observações:", 10, y); y += 7;
+  const obsQuebradas = pdf.splitTextToSize(observacoes, 180);
+  pdf.text(obsQuebradas, 10, y);
+  y += obsQuebradas.length * 7 + 5;
 
-  const observacoesQuebradas = pdf.splitTextToSize(observacoes, 180);
-  pdf.text(observacoesQuebradas, 10, y);
-  y += observacoesQuebradas.length * 7 + 5;
-
-  // Conteúdos selecionados
-  pdf.text("Aspectos Observados:", 10, y);
-  y += 7;
+  pdf.text("Aspectos Observados:", 10, y); y += 7;
 
   if (checkboxesMarcados.length === 0) {
     pdf.text("- Nenhum item selecionado.", 10, y);
   } else {
-    checkboxesMarcados.forEach((checkbox) => {
-      const texto = checkbox.dataset.text;
-
-      if (y > 280) {
-        pdf.addPage();
-        y = 10;
-      }
-
-      pdf.text(`- ${texto}`, 10, y);
+    checkboxesMarcados.forEach((cb) => {
+      if (y > 280) { pdf.addPage(); y = 10; }
+      pdf.text(`- ${cb.dataset.text}`, 10, y);
       y += 7;
     });
   }
 
-  // Salva o PDF
   pdf.save(`Parecer_${nomeAluno || "Aluno"}.pdf`);
 });
 
-// Limpar formulário
+// ====== Limpar formulário ======
 btnLimpar.addEventListener("click", () => {
-  // Limpa inputs e textarea
-  document.querySelectorAll("input[type='text'], textarea").forEach((campo) => {
-    campo.value = "";
-  });
-
-  // Desmarca todos os checkboxes
-  document.querySelectorAll("input[type='checkbox']").forEach((check) => {
-    check.checked = false;
-  });
-
-
+  document.querySelectorAll("input[type='text'], textarea")
+    .forEach(c => c.value = "");
+  document.querySelectorAll("input[type='checkbox']")
+    .forEach(c => c.checked = false);
 });
 
-
-$(document).ready(function () {
-  carregarTitulos();
+// ====== Botão Voltar ======
+btnVoltar.addEventListener("click", () => {
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = "dashbord.html";
+  }
 });
 
-
-const CarregarTitulos = () => {
-
+// ====== Carregar Títulos (cards) ======
+const carregarTitulos = () => {
   $.ajax({
-    url: 'http://localhost:3001/titulos?idTurma=1',
-    type: 'GET',
-    dataType: 'json',
+    url: `${API_BASE}/titulos?idTurma=1`,
+    type: "GET",
+    dataType: "json",
     success: function (titulos) {
-
       $("#cardsContainer").empty();
 
-      $.each(titulos, function (index, titulo) {
-
+      $.each(titulos, function (_, titulo) {
         const cardHTML = `
           <article class="card">
             <div class="card-titulo">${titulo.nomeTitulo}</div>
@@ -107,33 +88,29 @@ const CarregarTitulos = () => {
             </div>
           </article>
         `;
-
         $("#cardsContainer").append(cardHTML);
 
-        // ✅ carregar perguntas deste título
-        CarregarPerguntas(titulo.idTitulo);
+        // Carrega as perguntas deste título
+        carregarPerguntas(titulo.idTitulo);
       });
-
     },
     error: function () {
       Swal.fire("Erro", "Erro ao carregar títulos", "error");
     }
   });
-
 };
 
-const CarregarPerguntas = (idTitulo) => {
-
+// ====== Carregar Perguntas de cada título ======
+const carregarPerguntas = (idTitulo) => {
   $.ajax({
-    url: `'https://serviconodetcc.onrender.com/perguntas?idTitulo=${idTitulo}'`,
-    type: 'GET',
-    dataType: 'json',
+    url: `${API_BASE}/perguntas?idTitulo=${idTitulo}`,  // ✅ sem aspas extras
+    type: "GET",
+    dataType: "json",
     success: function (perguntas) {
-
       const div = $(`#perguntas-${idTitulo}`);
       div.empty();
 
-      $.each(perguntas, function (index, pergunta) {
+      $.each(perguntas, function (_, pergunta) {
         div.append(`
           <label class="pergunta-item">
             <input 
@@ -146,55 +123,29 @@ const CarregarPerguntas = (idTitulo) => {
           </label><br>
         `);
       });
-
     },
     error: function () {
       $(`#perguntas-${idTitulo}`).html("Erro ao carregar perguntas");
     }
   });
-
 };
 
-
-const  CarregarrTela  = () => {
-
-
-   $.ajax({
-        url: 'https://serviconodetcc.onrender.com/perguntas?idTitulo=1',
-        type: 'GET',
-        contentType: 'application/json',
-            dataType: 'json',
-        success: function (titulo, resposta) {
-          $("#titulo").text(titulo);
-          $.each(resposta, function (index, pergunta) {
-            $("#perguntas").append('<label><input type="checkbox" data-text="' + pergunta.questao + '" /> ' + pergunta.questao + '</label>');
-            
-
-            });
-            
-        },
-        error: function (err) {
-            console.error(err);
-            Swal.fire({
-                icon: "error",
-                title: "erro ao buscar as perguntas"
-});
-        }
-    });
+const idParecer = (idAluno) => {
+  $.ajax({
+    url: `${API_BASE}/parecer?idAluno=${idAluno}`,
+    type: "GET",
+    dataType: "json",
+    success: function (parecer) {
+      console.log("Parecer recebido:", parecer);
+    },
+    error: function (err) {
+      console.error("Erro ao carregar parecer:", err);
+      Swal.fire("Erro", "Erro ao carregar parecer do aluno.", "error");
+    }
+  });
 }
 
+// ====== Ponto de entrada ÚNICO ======
 $(document).ready(function () {
-
-  CarregarrTela();
-
+  carregarTitulos();   // ✅ nomes batem agora
 });
-
-document.getElementById("btn-voltar").addEventListener("click", function () {
-  if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    window.location.href = "dashbord.html"; // página desejada
-  }
-});
-
-
