@@ -1,17 +1,17 @@
+// Captura o container principal e os botões de alternância entre Login e Cadastro
 const container = document.querySelector('.container');
 const cadastrarBtn = document.querySelector('.cadastrar_btm');
 const loginBtn = document.querySelector('.login_btm');
 
-cadastrarBtn.addEventListener('click', () => {
-    container.classList.add('active');
-});
+// Alterna a exibição entre os formulários de login e cadastro
+cadastrarBtn.addEventListener('click', () => container.classList.add('active'));
+loginBtn.addEventListener('click', () => container.classList.remove('active'));
 
-loginBtn.addEventListener('click', () => {
-    container.classList.remove('active');
-});
+// URL base da API hospedada no Render
+const API_BASE = 'https://serviconodetcc.onrender.com';
 
+// Associa os cliques dos botões às funções de cadastro e login quando o DOM carrega
 $(document).ready(function () {
-
     $('#buttonCadastrar').click(function (event) {
         event.preventDefault();
         enviarParaCadastro();
@@ -23,46 +23,65 @@ $(document).ready(function () {
     });
 });
 
+// Limpa todos os campos do formulário de cadastro
 const limparCamposCadastro = () => {
-    $('#cadastroDeUsuario').val("");
-    $('#cadastroDeEmail').val("");
-    $('#cadastroDeSenha').val("");
+    $('#cadastroDeUsuario, #cadastroDeEmail, #cadastroDeSenha').val("");
 };
 
+// Limpa todos os campos do formulário de login
 const limparCamposLogin = () => {
-    $('#loginEmail').val("");
-    $('#loginSenha').val("");
+    $('#loginEmail, #loginSenha').val("");
 };
 
-var enviarParaCadastro = () => {
+// Exibe um alerta com indicador de carregamento durante requisições
+const mostrarLoading = (titulo = "Processando...") => {
+    Swal.fire({
+        title: titulo,
+        text: "Aguarde um momento.",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+};
 
-    let usuario = $('#cadastroDeUsuario').val().trim();
-    let email = $('#cadastroDeEmail').val().trim();
-    let senha = $('#cadastroDeSenha').val().trim();
+// Valida o formato do e-mail usando expressão regular
+const validarEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+// Valida os dados e envia o cadastro do usuário para a API via POST
+const enviarParaCadastro = () => {
+    const usuario = $('#cadastroDeUsuario').val().trim();
+    const email = $('#cadastroDeEmail').val().trim().toLowerCase();
+    const senha = $('#cadastroDeSenha').val();
 
     if (!usuario || !email || !senha) {
-        Swal.fire({
-            title: "Atenção",
-            text: "Preencha todos os campos antes de cadastrar.",
-            icon: "warning"
-        });
+        Swal.fire({ title: "Atenção", text: "Preencha todos os campos antes de cadastrar.", icon: "warning" });
         return;
     }
 
-    let dadosUsuario = {
-        NomeUsuario: usuario,
-        Email: email,
-        Senha: senha
-    };
+    if (!validarEmail(email)) {
+        Swal.fire({ title: "Atenção", text: "Informe um e-mail válido.", icon: "warning" });
+        return;
+    }
+
+    if (senha.length < 6) {
+        Swal.fire({ title: "Atenção", text: "A senha deve ter pelo menos 6 caracteres.", icon: "warning" });
+        return;
+    }
+
+    const dadosUsuario = { NomeUsuario: usuario, Email: email, Senha: senha };
+
+    mostrarLoading("Cadastrando...");
 
     $.ajax({
-        url: 'https://serviconodetcc.onrender.com/CadastrarUsuario',
+        url: `${API_BASE}/CadastrarUsuario`,
         dataType: 'json',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(dadosUsuario),
+        timeout: 60000,
 
-        success: function (dados) {
+        success: function () {
             Swal.fire({
                 title: "Sucesso",
                 text: "Usuário cadastrado com sucesso.",
@@ -76,138 +95,58 @@ var enviarParaCadastro = () => {
 
         error: function (err) {
             console.error("Erro ao cadastrar:", err);
-
-            Swal.fire({
-                title: "Erro",
-                text: "Não foi possível cadastrar o usuário.",
-                icon: "error"
-            });
+            let msg = "Não foi possível cadastrar o usuário.";
+            if (err.status === 409) msg = "E-mail já cadastrado.";
+            else if (err.status === 0) msg = "Sem conexão com o servidor.";
+            Swal.fire({ title: "Erro", text: msg, icon: "error" });
         }
     });
 };
 
+// Autentica o usuário na API e redireciona para a dashboard em caso de sucesso
 const receberLogin = () => {
-
-    let email = $('#loginEmail').val().trim();
-    let senha = $('#loginSenha').val().trim();
+    const email = $('#loginEmail').val().trim().toLowerCase();
+    const senha = $('#loginSenha').val();
 
     if (!email || !senha) {
-        Swal.fire({
-            title: "Atenção",
-            text: "Preencha o e-mail e a senha.",
-            icon: "warning"
-        });
+        Swal.fire({ title: "Atenção", text: "Preencha o e-mail e a senha.", icon: "warning" });
         return;
     }
 
+    mostrarLoading("Entrando...");
+
     $.ajax({
-        type: 'GET',
-        url: 'https://serviconodetcc.onrender.com/LoginUsuarioSenha?Email='
-            + encodeURIComponent(email)
-            + '&Senha='
-            + encodeURIComponent(senha),
+        type: 'POST',
+        url: `${API_BASE}/LoginUsuarioSenha`,
+        contentType: 'application/json',
         dataType: 'json',
+        data: JSON.stringify({ Email: email, Senha: senha }),
+        timeout: 60000,
 
         success: function (resposta) {
-            console.log(resposta);
+            const usuario = Array.isArray(resposta) ? resposta[0] : resposta;
 
-            if (
-                resposta &&
-                (
-                    resposta === true ||
-                    resposta.length > 0 ||
-                    resposta.email ||
-                    resposta.nome
-                )
-            ) {
+            if (usuario && usuario.idUsuario) {
                 Swal.fire({
                     title: "Sucesso",
                     text: "Login realizado com sucesso.",
                     icon: "success"
                 }).then(() => {
                     limparCamposLogin();
-                    window.location.href = 'dashboard.html?idUsuario=' + resposta[0].idUsuario;
+                    sessionStorage.setItem('idUsuario', usuario.idUsuario);
+                    window.location.href = `dashboard.html?idUsuario=${usuario.idUsuario}`;
                 });
             } else {
-                Swal.fire({
-                    title: "Erro",
-                    text: "Usuário ou senha inválidos.",
-                    icon: "error"
-                });
+                Swal.fire({ title: "Erro", text: "Usuário ou senha inválidos.", icon: "error" });
             }
         },
 
         error: function (err) {
             console.error("Erro ao consultar o servidor:", err);
-
-            Swal.fire({
-                title: "Erro",
-                text: "Erro ao consultar o servidor.",
-                icon: "error"
-            });
+            let msg = "Erro ao consultar o servidor.";
+            if (err.status === 401) msg = "Usuário ou senha inválidos.";
+            else if (err.status === 0) msg = "Sem conexão com o servidor.";
+            Swal.fire({ title: "Erro", text: msg, icon: "error" });
         }
     });
 };
-
-//   $.ajax({
-//       url: 'https://serviconodetcc.onrender.com/LoginUsuarioSenha?Email=' + $('#loginEmail').val() + '&senha=' + $('#loginSenha').val(),
-
-//     //     // Método GET para buscar usuários
-//          type: 'GET',
-
-//          contentType: 'application/json',
-//          dataType: 'json'});
-
-// }
-
-// $.ajax({
-//     // Endpoint com parâmetros de email e senha
-//     url: 'https://serviconodetcc.onrender.com/LoginUsuarioSenha?Email='
-//         + $('#loginEmail').val() + '&senha=' + $('#loginSenha').val(),
-
-//     // Método GET para buscar usuários
-//     type: 'GET',
-
-//     contentType: 'application/json',
-//     dataType: 'json',
-
-//     // Se a requisição retornar dados
-//     success: function (resposta) {
-//         console.log(resposta);
-
-// if (resposta) {
-//     let usuarioValido = false;
-
-//     // Percorre a lista de usuários retornados
-//     resposta.forEach(usuario => {
-
-//         // Verifica se email e senha coincidem
-//         if (usuario.email === $('#loginEmail').val() &&
-//             usuario.senha === $('#loginSenha').val()) {
-//             usuarioValido = true;
-//         }
-//     });
-
-//     // Se encontrou usuário válido
-//     if (usuarioValido) {
-//         // Redireciona para o dashboard
-//         window.location.href = 'dashbord.html';
-//     } else {
-//         alert('Usuário ou senha inválidos');
-//     }
-// } else {
-//     alert('Usuário ou senha inválidos');
-// }
-//},
-
-// Em caso de erro na requisição
-//         error: function (err) {
-//             console.error(err);
-
-//             Swal.fire({
-//                 icon: "error",
-//                 title: "Usuário ou senha invalido"
-//             });
-//         }
-//     });
-// }

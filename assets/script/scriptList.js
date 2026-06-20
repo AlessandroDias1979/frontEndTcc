@@ -1,11 +1,9 @@
-// ===============================
+
 // ELEMENTOS DO HTML
-// ===============================
 const btnVoltar = document.getElementById("btn-voltar");
 
-// ===============================
 // BOTÃO VOLTAR
-// ===============================
+
 btnVoltar.addEventListener("click", function () {
   if (window.history.length > 1) {
     window.history.back();
@@ -14,17 +12,14 @@ btnVoltar.addEventListener("click", function () {
   }
 });
 
-// ===============================
 // FUNÇÃO AUXILIAR: pega o ID correto do aluno
 // (resolve o problema do "undefined")
-// ===============================
+
 function getId(aluno) {
   return aluno.id ?? aluno.Id ?? aluno.ID ?? aluno.idAluno ?? aluno.IdAluno;
 }
 
-// ===============================
 // RENDERIZAR TABELA
-// ===============================
 function renderizarTabela(alunos) {
   const $tabela = $("#tabelaAlunos tbody");
   $tabela.empty();
@@ -62,9 +57,7 @@ function renderizarTabela(alunos) {
   });
 }
 
-// ===============================
 // LISTAR ALUNOS (GET)
-// ===============================
 function carregarAlunos() {
   $.ajax({
     url: "https://serviconodetcc.onrender.com/AllAlunos",
@@ -81,9 +74,7 @@ function carregarAlunos() {
   });
 }
 
-// ===============================
 // DELETAR ALUNO
-// ===============================
 function deletarAluno(id) {
   if (!id || id === "undefined") {
     alert("ID do aluno não encontrado. Verifique o console (F12).");
@@ -106,9 +97,7 @@ function deletarAluno(id) {
   });
 }
 
-// ===============================
 // EDITAR ALUNO (com modal dinâmico)
-// ===============================
 function editarAluno(aluno) {
   // Cria o modal direto no JS (sem precisar alterar HTML/CSS)
   const modalHTML = `
@@ -206,9 +195,7 @@ function editarAluno(aluno) {
   });
 }
 
-// ===============================
 // INICIALIZAÇÃO
-// ===============================
 $(document).ready(function () {
   carregarAlunos();
 });
