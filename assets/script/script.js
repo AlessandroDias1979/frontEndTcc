@@ -104,6 +104,7 @@ const enviarParaCadastro = () => {
 };
 
 // Autentica o usuário na API e redireciona para a dashboard em caso de sucesso
+
 const receberLogin = () => {
     const email = $('#loginEmail').val().trim().toLowerCase();
     const senha = $('#loginSenha').val();
@@ -115,25 +116,26 @@ const receberLogin = () => {
 
     mostrarLoading("Entrando...");
 
+    // Monta a URL com Email e Senha (com letras maiúsculas, como a API espera)
+    const url = `${API_BASE}/LoginUsuarioSenha?Email=${encodeURIComponent(email)}&Senha=${encodeURIComponent(senha)}`;
+
     $.ajax({
-        type: 'POST',
-        url: `${API_BASE}/LoginUsuarioSenha`,
-        contentType: 'application/json',
+        type: 'GET',
+        url: url,
         dataType: 'json',
-        data: JSON.stringify({ Email: email, Senha: senha }),
         timeout: 60000,
 
         success: function (resposta) {
             const usuario = Array.isArray(resposta) ? resposta[0] : resposta;
 
             if (usuario && usuario.idUsuario) {
+                sessionStorage.setItem('idUsuario', usuario.idUsuario);
                 Swal.fire({
                     title: "Sucesso",
                     text: "Login realizado com sucesso.",
                     icon: "success"
                 }).then(() => {
                     limparCamposLogin();
-                    sessionStorage.setItem('idUsuario', usuario.idUsuario);
                     window.location.href = `dashboard.html?idUsuario=${usuario.idUsuario}`;
                 });
             } else {
@@ -146,7 +148,14 @@ const receberLogin = () => {
             let msg = "Erro ao consultar o servidor.";
             if (err.status === 401) msg = "Usuário ou senha inválidos.";
             else if (err.status === 0) msg = "Sem conexão com o servidor.";
+            else if (err.status === 404) msg = "Serviço de login não encontrado.";
+            else if (err.status === 500) msg = "Erro interno no servidor.";
+            else if (err.statusText === "timeout") msg = "Tempo de resposta esgotado.";
             Swal.fire({ title: "Erro", text: msg, icon: "error" });
+        },
+
+        complete: function () {
+            esconderLoading();
         }
     });
 };
