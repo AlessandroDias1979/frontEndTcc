@@ -97,6 +97,7 @@ btnPdf.addEventListener("click", () => {
   const turma     = turmaSelecionada || "Não informada"; // 👈 vem do banco
   const periodo   = $("#periodo").val();
   const nivel     = $("#nivel").val();
+  const observacoes = $("#observacoes").val() || ""; // 👈 evita erro de variável indefinida
 
   const checkboxesMarcados = document.querySelectorAll(
     "input[type='checkbox']:checked"
