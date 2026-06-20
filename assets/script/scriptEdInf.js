@@ -10,8 +10,9 @@ const API_BASE = "https://serviconodetcc.onrender.com";
 const input = $("#nomeAluno");
 const lista = $("#listaAlunos");
 
-// guarda o ID do aluno selecionado
+// guarda o ID do aluno selecionado e a turma vinda do backend
 let alunoSelecionadoId = null;
+let turmaSelecionada   = ""; // 👈 NOVO: turma vinda do banco
 
 input.on("input", function () {
   const termo = $(this).val();
@@ -35,9 +36,11 @@ input.on("input", function () {
       }
 
       $.each(alunos, function (_, aluno) {
+        // 👇 incluímos a turma no data-attribute
         lista.append(`
           <div class="item-aluno"
-               data-id="${aluno.idAluno}">
+               data-id="${aluno.idAluno}"
+               data-turma="${aluno.Turma || ''}">
                ${aluno.NomeDoAluno}
           </div>
         `);
@@ -52,11 +55,11 @@ input.on("input", function () {
 
 // clique no aluno (delegação correta)
 $(document).on("click", ".item-aluno", function () {
-  // ignora clique no "Nenhum aluno encontrado"
   if ($(this).hasClass("sem-resultado")) return;
 
-  const nome = $(this).text().trim();
-  const id = $(this).data("id");
+  const nome  = $(this).text().trim();
+  const id    = $(this).data("id");
+  const turma = $(this).data("turma"); // 👈 captura a turma
 
   if (!id) {
     Swal.fire("Atenção", "ID do aluno não encontrado!", "warning");
@@ -65,9 +68,14 @@ $(document).on("click", ".item-aluno", function () {
 
   input.val(nome);
   alunoSelecionadoId = id;
+  turmaSelecionada   = turma || "Não informada"; // 👈 guarda a turma
+
+  // opcional: se você tiver um <span id="turmaInfo"> na tela
+  $("#turmaInfo").text(turmaSelecionada);
+
   lista.empty();
 
-  console.log("✅ Aluno selecionado:", id, nome);
+  console.log("✅ Aluno selecionado:", id, nome, "| Turma:", turmaSelecionada);
 
   // carrega parecer automaticamente
   idParecer(id);
@@ -85,11 +93,10 @@ btnPdf.addEventListener("click", () => {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF();
 
-  const nomeAluno   = $("#nomeAluno").val();
-  const turma       = $("#turma").val();
-  const observacoes = $("#observacoes").val();
-  const periodo     = $("#periodo").val();
-  const nivel       = $("#nivel").val();
+  const nomeAluno = $("#nomeAluno").val();
+  const turma     = turmaSelecionada || "Não informada"; // 👈 vem do banco
+  const periodo   = $("#periodo").val();
+  const nivel     = $("#nivel").val();
 
   const checkboxesMarcados = document.querySelectorAll(
     "input[type='checkbox']:checked"
@@ -103,8 +110,8 @@ btnPdf.addEventListener("click", () => {
 
   pdf.setFontSize(12);
   pdf.text(`Nome do aluno: ${nomeAluno}`, 10, y); y += 7;
-  pdf.text(`Turma: ${turma}`, 10, y); y += 7;
-  pdf.text(`Período: ${periodo}`, 10, y); y += 7;
+  pdf.text(`Turma: ${turma}`, 10, y);             y += 7; // 👈 turma do backend
+  pdf.text(`Período: ${periodo}`, 10, y);          y += 7;
   pdf.text(`Nível de desenvolvimento: ${nivel}`, 10, y); y += 10;
 
   pdf.text("Observações:", 10, y); y += 7;
@@ -134,6 +141,8 @@ btnLimpar.addEventListener("click", () => {
 
   lista.empty();
   alunoSelecionadoId = null;
+  turmaSelecionada   = "";          // 👈 reseta a variável
+  $("#turmaInfo").text("—");        // 👈 limpa a exibição (se existir)
 });
 
 // ====== VOLTAR ======
@@ -235,7 +244,6 @@ const idParecer = (idAluno) => {
       console.error("Status:", xhr.status);
       console.error("Resposta:", xhr.responseText);
 
-      // 404 = aluno sem parecer (não é erro real)
       if (xhr.status === 404) {
         console.info("ℹ️ Aluno ainda não possui parecer.");
         return;
@@ -248,22 +256,21 @@ const idParecer = (idAluno) => {
 
 // ====== PREENCHER PARECER NO FORMULÁRIO ======
 function preencherParecer(parecer) {
-  // se vier array, pega o primeiro
   const p = Array.isArray(parecer) ? parecer[0] : parecer;
-
   if (!p) return;
 
-  $("#turma").val(p.Turma || "");
+  // 👇 se o parecer trouxer a turma, sobrescreve a variável
+  if (p.Turma) {
+    turmaSelecionada = p.Turma;
+    $("#turmaInfo").text(p.Turma); // se tiver o span na tela
+  }
+
   $("#periodo").val(p.Periodo || "");
   $("#nivel").val(p.Nivel || "");
-  $("#observacoes").val(p.Observacoes || "");
 
-  // marca checkboxes do parecer antigo
   if (p.perguntasMarcadas && Array.isArray(p.perguntasMarcadas)) {
-    // primeiro desmarca tudo
     $("input[type='checkbox']").prop("checked", false);
 
-    // depois marca as do parecer
     p.perguntasMarcadas.forEach(idPergunta => {
       $(`input[data-id="${idPergunta}"]`).prop("checked", true);
     });
