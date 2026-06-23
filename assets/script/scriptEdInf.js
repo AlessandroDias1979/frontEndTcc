@@ -115,12 +115,12 @@ btnPdf.addEventListener("click", () => {
   pdf.text(`Período: ${periodo}`, 10, y);          y += 7;
   pdf.text(`Nível de desenvolvimento: ${nivel}`, 10, y); y += 10;
 
-  pdf.text("Observações:", 10, y); y += 7;
-  const obsQuebradas = pdf.splitTextToSize(observacoes, 180);
   pdf.text(obsQuebradas, 10, y);
   y += obsQuebradas.length * 7 + 5;
 
   pdf.text("Aspectos Observados:", 10, y); y += 7;
+
+  // captura os checkboxes marcados e adiciona ao PDF
 
   if (checkboxesMarcados.length === 0) {
     pdf.text("- Nenhum item selecionado.", 10, y);
@@ -151,7 +151,7 @@ btnVoltar.addEventListener("click", () => {
   if (window.history.length > 1) {
     window.history.back();
   } else {
-    window.location.href = "dashbord.html";
+    window.location.href = "../dashbord.html";
   }
 });
 
@@ -277,6 +277,64 @@ function preencherParecer(parecer) {
     });
   }
 }
+
+const cadastrarParecer = () => {
+  if (!alunoSelecionadoId) {
+    Swal.fire("Atenção", "Selecione um aluno antes de cadastrar o parecer.", "warning");
+    return;
+  } 
+};
+
+/*const cadastrarRespostas = (idParecer) => {
+  if (!alunoSelecionadoId) {
+    Swal.fire("Atenção", "Selecione um aluno.", "warning");
+    return;
+  }
+
+  if (!idParecer) {
+    Swal.fire("Erro", "ID do parecer não informado.", "error");
+    return;
+  }
+
+  const checkboxesMarcados = document.querySelectorAll(
+    "input[type='checkbox']:checked"
+  );
+
+  if (checkboxesMarcados.length === 0) {
+    Swal.fire("Atenção", "Selecione pelo menos uma pergunta.", "warning");
+    return;
+  }
+
+  // 🔥 Monta o array de objetos para enviar
+  const respostas = [];
+
+  checkboxesMarcados.forEach((cb) => {
+    respostas.push({
+      idAluno: alunoSelecionadoId,
+      idParecer: idParecer,
+      idPerguntas: cb.dataset.id
+    });
+  });
+
+  console.log("📦 Enviando respostas:", respostas);
+
+  // 🔥 Envio via AJAX
+  $.ajax({
+    url: `${API_BASE}/cadastrarQuestionarioResposta`,
+    type: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(respostas), // 👈 array completo
+
+    success: function () {
+      Swal.fire("Sucesso", "Respostas salvas com sucesso!", "success");
+    },
+
+    error: function (xhr) {
+      console.error("Erro ao salvar:", xhr.responseText);
+      Swal.fire("Erro", "Erro ao salvar respostas.", "error");
+    }
+  });
+};*/
 
 // ====== START ======
 $(document).ready(function () {

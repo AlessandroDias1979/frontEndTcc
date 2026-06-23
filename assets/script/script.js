@@ -136,7 +136,7 @@ const receberLogin = () => {
                     icon: "success"
                 }).then(() => {
                     limparCamposLogin();
-                    window.location.href = `dashboard.html?idUsuario=${usuario.idUsuario}`;
+                    window.location.href = `./dashboard.html?idUsuario=${usuario.idUsuario}`;
                 });
             } else {
                 Swal.fire({ title: "Erro", text: "Usuário ou senha inválidos.", icon: "error" });
