@@ -93,57 +93,69 @@ btnPdf.addEventListener("click", () => {
   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF();
 
-  const nomeAluno = $("#nomeAluno").val();
-  const turma     = turmaSelecionada || "Não informada"; // 👈 vem do banco
-  const periodo   = $("#periodo").val();
-  const nivel     = $("#nivel").val();
-  const observacoes = $("#observacoes").val() || ""; // 👈 evita erro de variável indefinida
+  // ====== Coleta de dados ======
+  const nomeAluno = ($("#nomeAluno").val() || "").trim() || "Não informado";
+  const turma     = turmaSelecionada || "Não informada";
+  const parecer   = ($("#parecer").val() || "").trim() || "Não informado";
+  const nivel     = ($("#nivel").val() || "").trim() || "Não informado";
 
   const checkboxesMarcados = document.querySelectorAll(
     "input[type='checkbox']:checked"
   );
 
-  let y = 10;
+  // ====== Configurações de layout ======
+  const margemEsq = 10;
+  const larguraUtil = 190; // 210mm (A4) - 2 * margem
+  const limiteY = 280;
+  let y = 15;
 
-  pdf.setFontSize(14);
-  pdf.text("Parecer – Educação Infantil (BNCC)", 10, y);
-  y += 10;
+  // Função utilitária para escrever texto com quebra automática e nova página
+  const escreverTexto = (texto, tamanhoFonte = 12, negrito = false) => {
+    pdf.setFontSize(tamanhoFonte);
+    pdf.setFont("helvetica", negrito ? "bold" : "normal");
 
-  pdf.setFontSize(12);
-  pdf.text(`Nome do aluno: ${nomeAluno}`, 10, y); y += 7;
-  pdf.text(`Turma: ${turma}`, 10, y);             y += 7; // 👈 turma do backend
-  pdf.text(`Período: ${periodo}`, 10, y);          y += 7;
-  pdf.text(`Nível de desenvolvimento: ${nivel}`, 10, y); y += 10;
+    const linhas = pdf.splitTextToSize(texto, larguraUtil);
+    linhas.forEach((linha) => {
+      if (y > limiteY) {
+        pdf.addPage();
+        y = 15;
+      }
+      pdf.text(linha, margemEsq, y);
+      y += tamanhoFonte * 0.5 + 2;
+    });
+  };
 
-  pdf.text(obsQuebradas, 10, y);
-  y += obsQuebradas.length * 7 + 5;
+  // ====== Cabeçalho ======
+  escreverTexto("Parecer - Educação Infantil (BNCC)", 14, true);
+  y += 3;
 
-  pdf.text("Aspectos Observados:", 10, y); y += 7;
+  // ====== Dados do aluno ======
+  escreverTexto(`Nome do aluno: ${nomeAluno}`, 12);
+  escreverTexto(`Turma: ${turma}`, 12);
+  escreverTexto(`Nível de desenvolvimento: ${nivel}`, 12);
+  y += 3;
 
-  // captura os checkboxes marcados e adiciona ao PDF
+  // ====== Parecer ======
+  escreverTexto("Parecer:", 12, true);
+  escreverTexto(parecer, 12);
+  y += 3;
+
+
+  // ====== Aspectos Observados ======
+  escreverTexto("Aspectos Observados:", 12, true);
 
   if (checkboxesMarcados.length === 0) {
-    pdf.text("- Nenhum item selecionado.", 10, y);
+    escreverTexto("- Nenhum item selecionado.", 12);
   } else {
     checkboxesMarcados.forEach((cb) => {
-      if (y > 280) { pdf.addPage(); y = 10; }
-      pdf.text(`- ${cb.dataset.text}`, 10, y);
-      y += 7;
+      const texto = cb.dataset.text || cb.value || "Item sem descrição";
+      escreverTexto(`- ${texto}`, 12);
     });
   }
 
-  pdf.save(`Parecer_${nomeAluno || "Aluno"}.pdf`);
-});
-
-// ====== LIMPAR ======
-btnLimpar.addEventListener("click", () => {
-  $("input[type='text'], textarea").val("");
-  $("input[type='checkbox']").prop("checked", false);
-
-  lista.empty();
-  alunoSelecionadoId = null;
-  turmaSelecionada   = "";          // 👈 reseta a variável
-  $("#turmaInfo").text("—");        // 👈 limpa a exibição (se existir)
+  // ====== Salvar ======
+  const nomeArquivo = `Parecer_${nomeAluno.replace(/\s+/g, "_")}.pdf`;
+  pdf.save(nomeArquivo);
 });
 
 // ====== VOLTAR ======
@@ -241,7 +253,7 @@ const idParecer = (idAluno) => {
     },
 
     error: function (xhr) {
-      console.error("❌ Erro AJAX:");
+      console.error("Erro AJAX:");
       console.error("Status:", xhr.status);
       console.error("Resposta:", xhr.responseText);
 
@@ -278,13 +290,6 @@ function preencherParecer(parecer) {
   }
 }
 
-const cadastrarParecer = () => {
-  if (!alunoSelecionadoId) {
-    Swal.fire("Atenção", "Selecione um aluno antes de cadastrar o parecer.", "warning");
-    return;
-  } 
-};
-
 /*const cadastrarRespostas = (idParecer) => {
   if (!alunoSelecionadoId) {
     Swal.fire("Atenção", "Selecione um aluno.", "warning");
@@ -305,7 +310,7 @@ const cadastrarParecer = () => {
     return;
   }
 
-  // 🔥 Monta o array de objetos para enviar
+  //  Monta o array de objetos para enviar
   const respostas = [];
 
   checkboxesMarcados.forEach((cb) => {
@@ -316,14 +321,13 @@ const cadastrarParecer = () => {
     });
   });
 
-  console.log("📦 Enviando respostas:", respostas);
-
-  // 🔥 Envio via AJAX
+  console.log(" Enviando respostas:", respostas);
+  //  Envio via AJAX
   $.ajax({
     url: `${API_BASE}/cadastrarQuestionarioResposta`,
     type: "POST",
     contentType: "application/json",
-    data: JSON.stringify(respostas), // 👈 array completo
+    data: JSON.stringify(respostas), //  array completo
 
     success: function () {
       Swal.fire("Sucesso", "Respostas salvas com sucesso!", "success");
