@@ -9,7 +9,7 @@
 <body>
   <header class="header">
     <div class="header-left">
-      <img src="./assets/img/logo.png" alt="logo.png" class="header-img">
+      <img src="../assets/img/logo.png" alt="logo.png" class="header-img">
     </div>
     <div class="header-title">
       <h1 class="header-title">Parecer Educação Infantil (BNCC)</h1>
@@ -23,13 +23,19 @@
     <section class="dados-aluno">
       <div class="campo">
         <label for="nomeAluno">Nome do Aluno</label>
-        <input type="text" id="nomeAluno" placeholder="Digite o nome do aluno" />
+        <select id="nomeAluno" class="select-aluno">
+          <option value="" disabled selected>Selecione o aluno</option>
+        </select>
+
         <div id="listaAlunos" class="lista-alunos"></div>
       </div>
       <div class="coluna-direita">
         <div class="campo">
           <label for="parecer">Parecer</label>
-          <input type="text" id="parecer" placeholder="Digite o parecer" />
+          <select id="parecer" class="select-parecer">
+          <option value="" disabled selected>Selecione o parecer</option>
+        </select>
+
         </div>
         <div class="campo">
           <label for="nivel">Nível de desenvolvimento</label>
@@ -45,7 +51,9 @@
 
     <section class="acoes">
       <button id="btnLimpar" class="btn btn-secundario" type="button">Limpar</button>
+      <button id="btnSalvar" class="btn btn-primario" type="button">Salvar</button>
       <button id="btnPdf" class="btn btn-primario" type="button">Gerar PDF</button>
+
     </section>
   </main>
 

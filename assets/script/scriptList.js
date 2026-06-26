@@ -1,9 +1,7 @@
-
 // ELEMENTOS DO HTML
 const btnVoltar = document.getElementById("btn-voltar");
 
 // BOTÃO VOLTAR
-
 btnVoltar.addEventListener("click", function () {
   if (window.history.length > 1) {
     window.history.back();
@@ -13,8 +11,6 @@ btnVoltar.addEventListener("click", function () {
 });
 
 // FUNÇÃO AUXILIAR: pega o ID correto do aluno
-// (resolve o problema do "undefined")
-
 function getId(aluno) {
   return aluno.id ?? aluno.Id ?? aluno.ID ?? aluno.idAluno ?? aluno.IdAluno;
 }
@@ -69,7 +65,6 @@ function carregarAlunos() {
     },
     error: function (erro) {
       console.error("Erro ao carregar alunos:", erro);
-      alert("Erro ao carregar a lista de alunos.");
     }
   });
 }
@@ -77,7 +72,7 @@ function carregarAlunos() {
 // DELETAR ALUNO
 function deletarAluno(id) {
   if (!id || id === "undefined") {
-    alert("ID do aluno não encontrado. Verifique o console (F12).");
+    console.warn("ID do aluno não encontrado.");
     return;
   }
 
@@ -87,19 +82,17 @@ function deletarAluno(id) {
     url: "https://serviconodetcc.onrender.com/deletarAluno/" + id,
     method: "DELETE",
     success: function () {
-      alert("Aluno deletado com sucesso!");
+      console.log("Aluno deletado com sucesso!");
       carregarAlunos();
     },
     error: function (xhr) {
       console.error("Erro ao deletar:", xhr.status, xhr.responseText);
-      alert("Erro ao deletar aluno.");
     }
   });
 }
 
 // EDITAR ALUNO (com modal dinâmico)
 function editarAluno(aluno) {
-  // Cria o modal direto no JS (sem precisar alterar HTML/CSS)
   const modalHTML = `
     <div id="modalEditar" style="
       position:fixed; inset:0; background:rgba(0,0,0,0.5);
@@ -122,6 +115,8 @@ function editarAluno(aluno) {
         <input type="text" id="editTurma" value="${aluno.Turma}" style="
           width:100%; padding:8px 10px; border:1px solid #ccc;
           border-radius:5px; font-size:14px; box-sizing:border-box;">
+
+        <p id="msgErroEdicao" style="color:#dc3545; margin:10px 0 0; font-size:13px; display:none;"></p>
 
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
           <button id="btnSalvarEdicao" style="
@@ -160,36 +155,43 @@ function editarAluno(aluno) {
     }
   });
 
+  // Mostrar erro dentro do modal (sem alert)
+  function mostrarErro(msg) {
+    $("#msgErroEdicao").text(msg).show();
+  }
+
   // Botão salvar
   $("#btnSalvarEdicao").on("click", function () {
     const novoNome  = $("#editNome").val().trim();
     const novaTurma = $("#editTurma").val().trim();
 
     if (!novoNome || !novaTurma) {
-      alert("Nome e turma não podem ficar vazios.");
+      mostrarErro("Nome e turma não podem ficar vazios.");
       return;
     }
 
     const dadosAluno = {
-      id: getId(aluno),
+      idAluno: getId(aluno),     // ← campo do banco
       NomeDoAluno: novoNome,
       Turma: novaTurma
     };
 
+    console.log("Enviando:", dadosAluno);
+
     $.ajax({
-      url: "https://serviconodetcc.onrender.com/editarAluno",
+      url: "https://serviconodetcc.onrender.com/alterarAluno",
       method: "PUT",
       contentType: "application/json",
       dataType: "json",
       data: JSON.stringify(dadosAluno),
-      success: function () {
-        alert("Aluno atualizado com sucesso!");
+      success: function (resposta) {
+        console.log("Aluno atualizado com sucesso!", resposta);
         fecharModal();
         carregarAlunos();
       },
       error: function (xhr) {
         console.error("Erro ao editar:", xhr.status, xhr.responseText);
-        alert("Erro ao editar aluno.");
+        mostrarErro("Erro ao editar aluno. Tente novamente.");
       }
     });
   });
