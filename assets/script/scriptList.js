@@ -162,39 +162,51 @@ function editarAluno(aluno) {
 
   // Botão salvar
   $("#btnSalvarEdicao").on("click", function () {
-    const novoNome  = $("#editNome").val().trim();
-    const novaTurma = $("#editTurma").val().trim();
+  const novoNome  = $("#editNome").val().trim();
+  const novaTurma = $("#editTurma").val().trim();
 
-    if (!novoNome || !novaTurma) {
-      mostrarErro("Nome e turma não podem ficar vazios.");
-      return;
-    }
+  if (!novoNome || !novaTurma) {
+    mostrarErro("Nome e turma não podem ficar vazios.");
+    return;
+  }
 
-    const dadosAluno = {
-      idAluno: getId(aluno),     // ← campo do banco
-      NomeDoAluno: novoNome,
-      Turma: novaTurma
-    };
+  const id = getId(aluno);
+  if (!id) {
+    mostrarErro("ID do aluno não encontrado.");
+    return;
+  }
 
-    console.log("Enviando:", dadosAluno);
+  // ✅ Agora com TODOS os campos que o backend espera
+  const dadosAluno = {
+    idAluno: id,
+    NomeDoAluno: novoNome,
+    Turma: novaTurma,
+    idUsuario: aluno.idUsuario        // ✅ preserva o vínculo com o usuário
+  };
 
-    $.ajax({
-      url: "https://serviconodetcc.onrender.com/alterarAluno",
-      method: "PUT",
-      contentType: "application/json",
-      dataType: "json",
-      data: JSON.stringify(dadosAluno),
-      success: function (resposta) {
-        console.log("Aluno atualizado com sucesso!", resposta);
+  console.log("Enviando:", dadosAluno);
+
+  $.ajax({
+    url: "https://serviconodetcc.onrender.com/alterarAluno/ " + id,  // ✅ sem barra no final
+    method: "Patch",  // ✅ método correto
+    contentType: "application/json",
+    data: JSON.stringify(dadosAluno),
+    success: function (resposta) {
+      console.log("Aluno atualizado!", resposta);
+      fecharModal();
+      carregarAlunos();
+    },
+    error: function (xhr) {
+      console.error("Erro ao editar:", xhr.status, xhr.responseText);
+      if (xhr.status === 200) {
         fecharModal();
         carregarAlunos();
-      },
-      error: function (xhr) {
-        console.error("Erro ao editar:", xhr.status, xhr.responseText);
-        mostrarErro("Erro ao editar aluno. Tente novamente.");
+        return;
       }
-    });
+      mostrarErro("Erro ao editar aluno (" + xhr.status + "). Tente novamente.");
+    }
   });
+});
 }
 
 // INICIALIZAÇÃO
