@@ -57,7 +57,6 @@ const limparCamposAluno = () => {
 
 
 var enviarParaCadastroAluno = () => {
-    alert(idUsuario);
 
     let nome = $('#nomeAlunoCadastrar').val().trim();
     let turma = $('#turmaAlunoCadastrar').val().trim();
