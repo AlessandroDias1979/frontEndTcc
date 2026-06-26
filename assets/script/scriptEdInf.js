@@ -208,7 +208,46 @@ btnSalvar.addEventListener("click", () => {
 
 // ====== GERAR PDF ======
 btnPdf.addEventListener("click", () => {
-  const { jsPDF } = window.jspdf;
+  carregar();
+});
+
+carregar= async () => {
+  const dados = await parecerIa();
+  parecer(dados);
+}
+
+parecerIa = async () => {
+  const checkboxesMarcados = document.querySelectorAll(
+    "input[type='checkbox']:checked"
+  );
+
+  var texto = "";
+    checkboxesMarcados.forEach((cb) => {
+      texto += cb.dataset.text ;
+    });
+    try {
+      const response = await fetch('https://node-h8tw.onrender.com/chat', {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+            mensagem: "Você é um especialista em educação infantil e deve fazer um parecer humanizado para os pais dando sugestões de ações pois o aluno " + $("#nomeAluno option:selected").text() + "sofre " + texto + " O texto deve ter apenas o laudo sem agradecimentos ou dados externos."
+         })
+      });
+
+      const retorno = await response.json();
+
+      return retorno.resposta;
+
+   } catch (erro) {
+      console.error("Erro na requisição:", erro);
+   }
+
+}
+
+function parecer(dados){
+   const { jsPDF } = window.jspdf;
   const pdf = new jsPDF();
 
   // ====== Coleta de dados ======
@@ -264,20 +303,18 @@ btnPdf.addEventListener("click", () => {
       const texto = cb.dataset.text || cb.value || "Item sem descrição";
       escreverTexto(`- ${texto}`, 12);
     }); 
-    var texto = "";
-    checkboxesMarcados.forEach((cb) => {
-      texto += `${cb.dataset.text}, `;
-    });
+    
 
 
 
   }
 
+  escreverTexto(dados, 12);
+
   // ====== Salvar ======
   const nomeArquivo = `Parecer_${nomeAluno.replace(/\s+/g, "_")}.pdf`;
   pdf.save(nomeArquivo);
-});
-
+}
 
 // ====== VOLTAR ======
 btnVoltar.addEventListener("click", () => {
